@@ -63,7 +63,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// add some middlewere to check to see if a user is logged in
+// add some middlewear to check to see if a user is logged in
 // app.use(function(req, res, next) {
 // 
 //     if(session.loggedIn && session.loggedIn == true) 
