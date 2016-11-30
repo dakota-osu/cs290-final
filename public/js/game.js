@@ -12,6 +12,7 @@ function Entity(x, y, width, height){
     // these values should be clamped between -1 and 1
     this.vx = 0;
     this.vy = 0;
+
     this.speed = 0;
     this.color = "#000";
 
@@ -31,8 +32,6 @@ function Entity(x, y, width, height){
             this.x + this.width > other.x   &&
             this.x < other.x + other.width;
     };
-
-
 };
 
 var game = {
@@ -69,7 +68,6 @@ function startGame() {
         switch(e.code) {
             case "KeyS":
             case "ArrowDown":
-                console.log("here");
                 player.vy = 1;
                 break;
             case "KeyW":
@@ -125,14 +123,11 @@ function run() {
     if(game.entities[0].y < 0 || game.entities[0].y > game.canvas.height - game.entities[0].height) {
         game.entities[0].vy *= -1;
     }
-    
-    
 
     // perfect AI, 'cuase lazy
     game.entities[2].y = game.entities[0].y - game.entities[2].height / 2 + game.entities[0].height / 2;
 
     // make sure that paddels are in bounds fully
-    
     for(var i = 1; i < 3; i++) {
         if(game.entities[i].y < 0)
             game.entities[i].y = 0;
@@ -144,3 +139,13 @@ function run() {
     game.ctx.fillText("Score: " + game.score, 8, 20);
 }
 
+/**
+ * user should just be the name of the current user, validate on the backend
+ */
+function postScore(user) {
+    var request = new XMLHttpRequest();
+    // TODO: find out what url to use
+    request.open("/")
+    request.setRequestHeader("Content-Type", "text/plain");
+    request.send(game.score)
+}
