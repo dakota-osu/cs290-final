@@ -16,6 +16,7 @@ var mysqlHost = "mysql.cs.orst.edu";
 var mysqlUser = "cs290_noelcket";
 var mysqlPassword = "9959";
 var mysqlDB = "cs290_noelcket";
+
 var mysqlConnection = mysql.createConnection({
     host: mysqlHost,
     user: mysqlUser,
@@ -76,7 +77,8 @@ app.use(session({
 //rendres the index page
 app.get('/', function (req, res) {
     res.render('index-page', {
-        pageTitle: 'Welcome!'
+        pageTitle: 'Welcome!',
+        loggedIn: session.loggedIn
     });
 });
 
@@ -121,23 +123,42 @@ app.post('/score/:userid', function (req, res, next) {
     }
 });
 
-app.post('/newuser', function (req, res, next) {
+app.post('/login', function (req, res, next) {
     
+    var userId   = req.params.userId;
+    var password = req.params.password;
+
+    console.log(userId, password);
     console.log(req.body);
 
-    if (req.body) {
-        mysqlConnection.query(
-        'INSERT INTO PongGame (userName, Password) VALUES (?,?)', [req.body.userId, req.body.password],
-        function (err, result) {
-            if (err) {
-                console.log("==Error Adding User into Data Base: ", err);
-                res.status(500).send("USER NAME already taken please enter a different name");
+    mysqlConnection.query(
+        'INSERT INTO PongGame (userName, Password) VALUES (?, ?)',
+        [userId, password],
+        function(err, result) {
+            if(err) {
+                console.log("== Error Adding User Into Data Base:", err);
+                res.status(500).send("USER NAME already taken please enter a different name!");
+            } else {
+                session.loggedIn = true;
+                res.redirect("/");
             }
-            res.status(200).send();
-        });
-    } else {
-        res.status(400).send("Incompleate data");
-    }
+        }
+    );
+    // console.log(req.body);
+
+    // if (req.body) {
+    //     mysqlConnection.query(
+    //     'INSERT INTO PongGame (userName, Password) VALUES (?,?)', [req.body.userId, req.body.password],
+    //     function (err, result) {
+    //         if (err) {
+    //             console.log("==Error Adding User into Data Base: ", err);
+    //             res.status(500).send("USER NAME already taken please enter a different name");
+    //         }
+    //         res.status(200).send();
+    //     });
+    // } else {
+    //     res.status(400).send("Incompleate data");
+    // }
 });
 
 //render the 404 page for any page that doesn't exists
