@@ -4,7 +4,11 @@
         <li class="navbar-item"><a href="/high-scores">High-scores</a></li>
         {{#if userName}}
         <li class="navbar-item"><a href="/user-scores">{{userName}}</a></li>
+        <li class="navbar-item navbar-right" id="logout-button">logout</li>
         {{/if}}
-        <li class="navbar-item navbar-right"><a href="/">log-out</a></li>
+        {{#unless userName}}
+        <li class="navbar-item navbar-right" id="login-button">login</li>
+        {{/unless}}
+        
     </ul>
 </nav>

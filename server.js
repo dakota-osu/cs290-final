@@ -143,8 +143,7 @@ app.get('/user-scores/:userId', function (req, res) {
 //renders the pong page
 app.get('/pong', function (req, res) {
     res.render('pong-page', {
-        pageTitle: 'Welcome to the Pong Zone',
-        userName: 'Test'
+        pageTitle: 'Welcome to the Pong Zone'
     });
 });
 
