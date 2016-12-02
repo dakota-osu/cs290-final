@@ -129,7 +129,7 @@ app.post('/login', function (req, res, next) {
     var password = req.params.password;
 
     console.log(userId, password);
-    console.log(req.body);
+    console.log(req);
 
     mysqlConnection.query(
         'INSERT INTO PongGame (userName, Password) VALUES (?, ?)',
