@@ -3,3 +3,4 @@
 // if i can find a way to pass the score out of the game other wise the game will simply 
 // post the score it self.
 
+document.getElementById('start-game-button').addEventListener('click', startGame());

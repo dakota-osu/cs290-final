@@ -143,7 +143,8 @@ app.get('/user-scores/:userId', function (req, res) {
 //renders the pong page
 app.get('/pong', function (req, res) {
     res.render('pong-page', {
-        pageTitle: 'Welcome to the Pong Zone'
+        pageTitle: 'Welcome to the Pong Zone',
+        userName: 'test'
     });
 });
 
@@ -152,7 +153,7 @@ app.post('/score/:userid', function (req, res, next) {
     if (req.body) {
         mysqlConnection.query(
             'INSERT INTO Scores(userName, Score) VALUES (?, ?)',
-            [userid, req.body.score], 
+            [req.body.userName , req.body.score], 
                 function (err, result) {
                     if (err) {
                         console.log("==Error Adding score into Data Base: " + err)
