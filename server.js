@@ -54,7 +54,7 @@ var users = {
 
 //statically serves files from public
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // required to use sessions
@@ -170,11 +170,11 @@ app.post('/score/:userid', function (req, res, next) {
 
 app.post('/login', function (req, res, next) {
     
-    var userId   = req.params.userId;
-    var password = req.params.password;
+    var userId   = req.body.userId;
+    var password = req.body.password;
 
     console.log(userId, password);
-    console.log(req);
+    console.log(req.body);
 
     mysqlConnection.query(
         'INSERT INTO PongGame (userName, Password) VALUES (?, ?)',

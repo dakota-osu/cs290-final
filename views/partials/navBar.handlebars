@@ -4,7 +4,6 @@
         <li class="navbar-item"><a href="/pong">Pong</a></li>
         <li class="navbar-item"><a href="/high-scores">High-scores</a></li>
         {{#if userName}}
-<<<<<<< HEAD
             <li class="navbar-item"><a href="/user-scores">{{userName}}</a></li>
         {{/if}}
         
@@ -13,14 +12,5 @@
         {{else}} 
             <li class="navbar-item navbar-right"><a onclick="showModal()">log-in</a></li>
         {{/if}}
-=======
-        <li class="navbar-item"><a href="/user-scores/{{userName}}" id="user-name">{{userName}}</a></li>
-        <li class="navbar-item navbar-right" id="logout-button">logout</li>
-        {{/if}}
-        {{#unless userName}}
-        <li class="navbar-item navbar-right" id="login-button">login</li>
-        {{/unless}}
-        
->>>>>>> Thomas-DynamicScores
     </ul>
 </nav>
