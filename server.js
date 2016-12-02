@@ -3,7 +3,9 @@ var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
+var bodyParser = require('body-parser');
 var mysql = require('mysql');
+var session = require('express-session');
 
 // sets up the app and tells the server what port to listen on
 var app = express();
@@ -36,6 +38,7 @@ mysqlConnection.connect(function (err) {
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
+
 //creates a variable to test charts in userscores and highscors
 var users = {
     "bob": {
@@ -50,6 +53,25 @@ var users = {
 
 //statically serves files from public
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(bodyParser.json());
+
+// required to use sessions
+app.use(session({
+    secret: 'thisisaverywellkeptsecret',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// add some middlewear to check to see if a user is logged in
+// app.use(function(req, res, next) {
+// 
+//     if(session.loggedIn && session.loggedIn == true) 
+//         next();   
+//     
+//     // the user is not logged in so we take them to the login page
+//     res.redirect("")
+// });
 
 //rendres the index page
 app.get('/', function (req, res) {
@@ -100,9 +122,12 @@ app.post('/score/:userid', function (req, res, next) {
 });
 
 app.post('/newuser', function (req, res, next) {
+    
+    console.log(req.body);
+
     if (req.body) {
         mysqlConnection.query(
-        'INSERT INTO PongGame (userName, Password) VALUES (?,?)', [req.body.user.userId, req.body.user.password],
+        'INSERT INTO PongGame (userName, Password) VALUES (?,?)', [req.body.userId, req.body.password],
         function (err, result) {
             if (err) {
                 console.log("==Error Adding User into Data Base: ", err);

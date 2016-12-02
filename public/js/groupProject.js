@@ -5,8 +5,8 @@ var isLoggedIn = false;
 
 
 //sets up modal when the login button is clicked.
-var hiddenA = document.getElementById('login')
-hiddenA.addEventListener('click', handleLogin)
+var hiddenA = document.getElementById('login');
+hiddenA.addEventListener('click', handleLogin);
 
 var hiddenB = document.getElementById('new-user');
 hiddenB.addEventListener('click', handleCreateNewUser);
@@ -27,31 +27,31 @@ function handleCreateNewUser() {
 function removeModal()
 {
     //makes modal visable
-	var t = document.querySelectorAll('.hidden')
-	console.log('clicked');
-	for(var i = 0;i < t.length; i++)
-	{
-	    t[i].removeAttribute('class');
-	}
+    var t = document.querySelectorAll('.hidden');
+    console.log('clicked');
+    for(var i = 0;i < t.length; i++)
+    {
+        t[i].removeAttribute('class');
+    }
     //sets up event listeners on modal buttons
-	document.querySelector('.modal-close-button').addEventListener('click', hideModal);
-	document.querySelector('.modal-cancel-button').addEventListener('click', hideModal);
+    document.querySelector('.modal-close-button').addEventListener('click', hideModal);
+    document.querySelector('.modal-cancel-button').addEventListener('click', hideModal);
 }
-	
-	
-	
+
+
+
 //closes the modal and clears its contents
 function hideModal()
 {
-document.getElementById("modal-backdrop").setAttribute('class','hidden')
-document.getElementById("add-note-modal").setAttribute('class','hidden')
+    document.getElementById("modal-backdrop").setAttribute('class','hidden');
+    document.getElementById("add-note-modal").setAttribute('class','hidden');
 
-	//clears input of modal
-	var modalIn = document.querySelectorAll('input');
-	for (var i = 0; i < modalIn.length; i++)
-	{
-		modalIn[i].value = '';
-	}
+    //clears input of modal
+    var modalIn = document.querySelectorAll('input');
+    for (var i = 0; i < modalIn.length; i++)
+    {
+        modalIn[i].value = '';
+    }
 }
 
 //sets up to send a get to the server with the userId and Password in the 
@@ -62,8 +62,7 @@ function getModalData() {
     var element2 = document.getElementById("login-input-password") ;
     var userId = element1.value;
     var password = element2.value;
-    if (!userId)
-    {
+    if (!userId) {
         alert("Please Enter a UserName!");
     } else if (!password) {
         alert("Please Enter a password!");
