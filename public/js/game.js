@@ -119,6 +119,11 @@ var gameStarted = false;
         // check for out of bounds
         if (game.entities[0].x < 0 || game.entities[0].x > game.canvas.width) {
             //postScore(userName);
+            // puts the ball in the middle with no volocity so the game will wait untill
+            // the user pushes the button to restart the game.
+            game.entities[0].speed = 0;
+            game.entities[0].x = game.canvas.width / 2 - game.entities[0].width / 2;
+            game.entities[0].y = game.canvas.height / 2 - game.entities[0].height / 2;
             gameButton.disabled = false;
             postScore(userName);
 
