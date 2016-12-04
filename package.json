@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/dakota-osu/cs290-final/readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "espress": "0.0.0",
     "express": "^4.14.0",
     "express-handlebars": "^3.0.0",

@@ -54,7 +54,9 @@ var users = {
 
 //statically serves files from public
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({extended: true}));
+//set up app to parse the body of requests
+//app.use(bodyParser.urlencoded({ extended: true })); don't need couldn't get
+//http request to work from modal HTML
 app.use(bodyParser.json());
 
 // required to use sessions
@@ -78,7 +80,6 @@ app.use(session({
 app.get('/', function (req, res) {
     res.render('index-page', {
         pageTitle: 'Welcome!',
-        loggedIn: session.loggedIn
     });
 });
 
@@ -145,8 +146,7 @@ app.get('/user-scores/:userId', function (req, res) {
 //renders the pong page
 app.get('/pong', function (req, res) {
     res.render('pong-page', {
-        pageTitle: 'Welcome to the Pong Zone',
-        userName: 'test'
+        pageTitle: 'Welcome to the Pong Zone'
     });
 });
 
@@ -168,13 +168,110 @@ app.post('/score/:userid', function (req, res, next) {
     }
 });
 
+// handles when some one is loggon and wants the pong page
+app.get('/pong/:userId', function (req, res) {
+    var userId = req.params.userId;
+    mysqlConnection.query('SELECT * FROM Users WHERE userName LIKE ?', [userId], function (err, rows) {
+
+        if (err) {
+            console.log("SQL ERROR: ", err);
+            res.status('500', 'ERROR with Data Base');
+        } else {
+            if (rows[0].Loggon) {
+                res.render('pong-page', {
+                    pageTitle: 'Welcome to the Pong Zone!',
+                    userName: userId
+                });
+            } else
+                res.redirect('/');
+        }
+    });
+
+});
+
+//handles when some one wants the high scores page and is loggon
+app.get('/high-scores/:userId', function (req, res) {
+    var userId = req.params.userId;
+    mysqlConnection.query('SELECT * FROM Users WHERE userName LIKE ?', [userId], function (err, rows) {
+        if (err) {
+            res.status('500', 'Issues with data base');
+        } else{
+            if (rows[0].Loggon) {
+                mysqlConnection.query('SELECT * FROM Scores WHERE userName LIKE ? LIMIT 10', [req.params.userId], function (err, rows) {
+                    if (err) {
+                        console.log("error fetching data from server: ", err);
+                        res.status('500', 'User Does Not Exists');
+                    } else {
+                        var scores = [];
+                        var i = 0;
+                        rows.forEach(function (row) {
+                            i++;
+                            scores.push({
+                                userName: i + '.',
+                                score: row.Score
+                            });
+                        });
+                        res.render('userscore-page', {
+                            user: scores,
+                            pageTitle: 'High Scores',
+                            userName: userId
+                        });
+
+                    }
+                });
+            } else {
+                res.redirect('/');
+            }
+        }
+    });
+});
+
+// handles when the user wants the index page when they are logged on
+app.get('/:userId', function (req, res) {
+    userId = req.params.userId;
+    mysqlConnection.query('SELECT * FROM Users WHERE userName LIKE ?', [userId], function (err, rows) {
+        if (rows[0].Loggon) {
+            var Welcome = 'Welcome' + userId + '!';
+            res.render('index-page', {
+                pageTile: 'Welcome!',
+                userName: userId
+            });
+        } else {
+            res.redirect('/');
+        }
+    });
+});
+
 app.post('/login', function (req, res, next) {
+    var userId = req.body.userName;
+    var password = req.body.password;
+    if (userId) {
+        mysqlConnection.query(
+           'SELECT * FROM Users WHERE userName LIKE ?', [userId], function (err, rows) {
+               if (err) {
+                   console.log("==No Such user");
+                   res.status(500).send("NO SUCH USER EXISTS");
+               } else if (rows[0].Password == password) {
+                   mysqlConnection.query('UPDATE Users SET Loggon = TRUE  WHERE userName LIKE ?', [userId], function (err) {
+                       if (err) {
+                           console.log("server error:", err);
+                           res.satus(500).send("Error from data base");
+                       } else {
+                           res.status(200).send();
+                       }
+            
+                   });
+               }
+
+           });
+    }
+});
+
+//deals with when the user wants to login
+app.post('/newuser', function (req, res, next) {
     
     var userId   = req.body.userId;
     var password = req.body.password;
-
-    console.log(userId, password);
-    console.log(req.body);
 
     mysqlConnection.query(
         'INSERT INTO PongGame (userName, Password) VALUES (?, ?)',
@@ -184,8 +281,7 @@ app.post('/login', function (req, res, next) {
                 console.log("== Error Adding User Into Data Base:", err);
                 res.status(500).send("USER NAME already taken please enter a different name!");
             } else {
-                session.loggedIn = true;
-                res.redirect("/");
+                res.status(200).send();
             }
         }
     );
@@ -204,6 +300,18 @@ app.post('/login', function (req, res, next) {
     // } else {
     //     res.status(400).send("Incompleate data");
     // }
+});
+
+app.post('/log-out/:userId', function (req, res) {
+    var userId = req.params.userId;
+    mysqlConnection.query('UPDATE Users SET Loggon = false  WHERE userName LIKE ?', [userId], function (err, rows) {
+        if (err) {
+            console.log("LogOut Error: ", err);
+            res.status(500).send("Error logging out");
+
+        } else
+            res.status(200).send();
+    });
 });
 
 //render the 404 page for any page that doesn't exists

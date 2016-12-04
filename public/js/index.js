@@ -1,3 +1,4 @@
+
 //Will pull code out of game.js that isn't needed in game.js
 //that code will go here and this file will be included only in the index page
 var isLoggedIn = false;
@@ -37,9 +38,13 @@ function removeModal() {
     }
     //sets up event listeners on modal buttons
     document.querySelector('.modal-close-button').addEventListener('click', hideModal);
-    document.querySelector('.modal-cancel-button').addEventListener('click', hideModal);
-    document.querySelector('.modal-accept-button').addEventListener('click', logonUser);
-    document.querySelector('.modal-newuser-button').addEventListener('click', newUser);
+    document.getElementById('modal-cancel-button').addEventListener('click', hideModal);
+    document.getElementById('modal-new-user-button').addEventListener('click', newUser);
+    document.getElementById('modal-accept-button').addEventListener('click', logonUser);
+}
+
+function logon() {
+    removeModal();
 }
 
 function newUser() {
@@ -53,19 +58,63 @@ function newUser() {
 //once we know what it means to be loggon it will handle logging off but for now
 //redirect to the index page.
 function logOff() {
-    window.location = '/';
-}
+    var userIdHtml = document.getElementById('user-name');
+    var userId = userIdHtml.textContent;
+    console.log(userId);
+    if (userId) {
+        url = '/log-out/' + userId;
+        req = new XMLHttpRequest();
+        req.open('POST', url);
+        req.addEventListener('load', function (event) {
+            if (event.target.status != 200) {
+                console.log("There was an error logging out");
+                window.location = '/';
+            } else {
+                window.location = '/';
+            }
+        });
+        req.send();
 
-// once we know what logging on actully means we will call this function and do the work
-// for right now pull up the modal. and add an event listeners to the accept buttons.
-function logon() {
-    removeModal();
-    console.log("== attempted to log on");
+    }
 }
-
 
 //Handles logging the user on after the user clicks log on.
-function logonUser() {
+function logonUser(UserName) {
+    var userNameHTML = document.getElementById('login-input-userid');
+    var passwordHTML = document.getElementById('login-input-password');
+    var password = passwordHTML.value;
+    var userId = userNameHTML.value;
     hideModal();
-    console.log("==sent info to server");
+    postUserLogin(userId, password, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            var url = '/pong/' + userId;
+            window.location = url;
+        }
+    });
+
 }
+
+//posts the usesr logon
+function postUserLogin(userId, password, callback) {
+    console.log(userId, password);
+    var postUrl = '/login'
+    req = new XMLHttpRequest();
+    req.open('POST', postUrl);
+    req.setRequestHeader('Content-Type', 'application/json');
+
+    req.addEventListener('load', function (event) {
+        var error;
+        if (event.target.status != 200) {
+            error = event.target.response;
+        }
+        callback(error);
+    });
+
+    req.send(JSON.stringify({
+        userName: userId,
+        password: password
+    }));
+}
+

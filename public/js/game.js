@@ -7,10 +7,11 @@ var gameStarted = false;
 
     //gets user name for future posts to the server.
     //thomas: not elegent but will do the job
-    var userNameHtml = document.getElementById('user-name');
-    var userName = userNameHtml.textContent;
-    console.log(userNameHtml);
-    console.log(userName);
+var userNameHtml = document.getElementById('user-name');
+var userName = null;
+    if (userNameHtml) {
+        userName = userNameHtml.textContent;
+    }
 
     const BALL_SPEED_MIN = 3;
     const BALL_SPEED_MAX = 6;
