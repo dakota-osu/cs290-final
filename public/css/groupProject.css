@@ -1,6 +1,6 @@
 body
 {
-	
+
 	background:#999;
 }
 	nav {
@@ -35,10 +35,10 @@ body
   float: right;
 }
 
-h1 { 
-        -moz-animation:bounce .80s linear;  
-        -webkit-animation:bounce .80s linear; 
-} 
+h1 {
+        -moz-animation:bounce .80s linear;
+        -webkit-animation:bounce .80s linear;
+}
 
 @-moz-keyframes bounce {
         0%{ -moz-transform:scale(0); opacity:0;}
@@ -113,35 +113,37 @@ h1 {
   padding: 20px;
 }
 
-.todo-input-element {
+.login-input-element {
   display: flex;
   align-items: center;
   font-size: 20px;
   margin: 10px 0;
 }
 
-.todo-input-element label {
+.login-input-userid label {
   font-weight: 600;
   flex: 1 75px;
   margin-right: 10px;
 }
 
-.todo-input-element input,
-.todo-input-element textarea {
+.login-input-password label {
+  font-weight: 600;
+  flex: 1 75px;
+  margin-right: 10px;
+}
+
+.login-input-element input,
+.login-input-element textarea {
   flex: 6 200px;
   padding: 8px;
   font-size: 20px;
   border: 1px solid #aaa;
 }
 
-.todo-input-element textarea {
+.login-input-element textarea {
   min-height: 64px;
 }
 
-.todo-input-element.required label::after {
-  content: ' *';
-  color: red;
-}
 
 .modal-footer {
   display: flex;
@@ -172,5 +174,101 @@ h1 {
 .modal-footer .modal-accept-button:hover {
   background-color: #5481e4;
 }
-	
-	
+
+/*updated buttons*/
+#login {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+	width:50%;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: blue;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+#login:hover{background-color: gray}
+
+#login:active {
+  background-color: gray;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+/*updated buttons*/
+#new-user {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+	width:25%;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: red;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+}
+
+#new-user:hover{background-color: gray}
+
+#new-user:active {
+  background-color: gray;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+/*center game*/
+.game-center{
+position:fixed; /*absolute for not move when scrolling*/
+top:70%;
+left:50%;
+width:500px;  /* adjust as per your needs */
+height:300px;   /* adjust as per your needs */
+margin-left:-250px;   /* negative half of width above */
+margin-top:-250px;   /* negative half of height above */
+border-style:solid;
+background-color: #8fb9bc;
+<hr width="1" size="500">
+}
+
+/*center text*/
+.text-center{
+position:fixed; /*absolute for not move when scrolling*/
+top:70%;
+left:50%;
+width:500px;  /* adjust as per your needs */
+height:300px;   /* adjust as per your needs */
+margin-left:-250px;   /* negative half of width above */
+margin-top:-250px;   /* negative half of height above */
+
+}
+#start-pong-game-button
+{
+	display: inline-block;
+  padding: 15px 25px;
+  font-size: 24px;
+	width:25%;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: red;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #999;
+
+}
+
+/*TABLE BORDERS*/
+table, th, td {
+   border: 1px solid black;
+	 width:100%
+}
