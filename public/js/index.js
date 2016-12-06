@@ -47,9 +47,31 @@ function logon() {
     removeModal();
 }
 
+//need to impliment today!
 function newUser() {
-    hideModal();
-    console.log("==you have attempted to create a new user");
+    var userId = document.getElementById('login-input-userid').value;
+    var password = document.getElementById('login-input-password').value;
+    console.log(userId, password);
+    if (userId && password) {
+        postNewUser(userId, password, function (err) {
+            if (err) {
+                alert('UserId already taken');
+            } else {
+                postUserLogin(userId, password, function (err) {
+                    if (err) {
+                        console.log("there was an error logging in");
+                    } else {
+                        var url = '/pong/' + userId;
+                        window.location = url;
+                    }
+                });
+            }
+        });
+        hideModal();
+    } else {
+        alert("Please enter a valid user name and password");
+    }
+    
 }
 
 //This section is a shell for functions we will need to impliment later once we know
@@ -118,3 +140,20 @@ function postUserLogin(userId, password, callback) {
     }));
 }
 
+function postNewUser(userId, password, callback) {
+    var url = '/newuser';
+    var postRequest = new XMLHttpRequest();
+    postRequest.open('POST', url);
+    postRequest.setRequestHeader('Content-Type', 'application/json');
+    postRequest.addEventListener('load', function (event) {
+        var error;
+        if (event.target.status !== 200) {
+             error = event.target.response;
+       }
+         callback(error);
+     });
+     postRequest.send(JSON.stringify({
+       userId: userId,
+         password: password
+     }));
+  }
