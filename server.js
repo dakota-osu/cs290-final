@@ -42,6 +42,7 @@ app.set('view engine', 'handlebars');
 
 //creates a variable to test charts in userscores and highscors
 var users = {
+
     "bob": {
         "userName": "bob123",
         "score": "12345"
