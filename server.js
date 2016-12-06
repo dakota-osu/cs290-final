@@ -118,9 +118,10 @@ app.get('/high-scores', function (req, res) {
     });
 });
 
+// need to fix
 //renders the userscores page
 app.get('/user-scores/:userId', function (req, res) {
-    mysqlConnection.query('SELECT * FROM Scores WHERE userName LIKE ? LIMIT 10',[req.params.userId], function(err, rows) {
+    mysqlConnection.query('SELECT * FROM Scores WHERE userName LIKE ? LIMIT 10', [req.params.userId], function(err, rows) {
         if(err){
             console.log("error fetching data from server: ", err);
             res.status('500', 'User Does Not Exists');
@@ -190,39 +191,39 @@ app.get('/pong/:userId', function (req, res) {
 
 });
 
+//need to fix
 //handles when some one wants the high scores page and is loggon
 app.get('/high-scores/:userId', function (req, res) {
-    var userId = req.params.userId;
-    mysqlConnection.query('SELECT * FROM Users WHERE userName LIKE ?', [userId], function (err, rows) {
-        if (err) {
-            res.status('500', 'Issues with data base');
-        } else{
-            if (rows[0].Loggon) {
-                mysqlConnection.query('SELECT * FROM Scores WHERE userName LIKE ? LIMIT 10', [req.params.userId], function (err, rows) {
-                    if (err) {
-                        console.log("error fetching data from server: ", err);
-                        res.status('500', 'User Does Not Exists');
-                    } else {
-                        var scores = [];
-                        var i = 0;
-                        rows.forEach(function (row) {
-                            i++;
-                            scores.push({
-                                userName: i + '.',
-                                score: row.Score
-                            });
-                        });
-                        res.render('userscore-page', {
-                            user: scores,
-                            pageTitle: 'High Scores',
-                            userName: userId
-                        });
+    userId = req.params.userId
+    //querys the server to sort the scores table in assending order and
+    // gets the top 10 scores to out put to the page
+    var scores = [];
+    //sorts the data base
+    mysqlConnection.query(
+            'ALTER TABLE `Scores` ORDER BY `Score` DESC', function (err, rows) {//i don't care if the table is already sorted
+            });
 
-                    }
+    //gets the top ten scores
+    mysqlConnection.query('SELECT * FROM Scores LIMIT 10', function (err, rows) {
+        if (err) {
+            console.log("Error fetching scores from data base: ", err);
+            res.status('500', 'error fetching scores from the database: ', +err);
+        } else {
+
+            //if we are sucessfull render datat in a format the
+            // template can use.
+            scores = [];
+            rows.forEach(function (row) {
+                scores.push({
+                    userName: row.userName,
+                    score: row.Score
                 });
-            } else {
-                res.redirect('/');
-            }
+            });
+            res.render('highscore-page', {
+                user: scores,
+                pageTitle: 'High-Scores',
+                userName: userId
+            });
         }
     });
 });
@@ -252,6 +253,8 @@ app.post('/login', function (req, res, next) {
                if (err) {
                    console.log("==No Such user");
                    res.status(500).send("NO SUCH USER EXISTS");
+               } else if(!rows[0]) {
+               res.status(500).send("NO SUCH USER EXISTS");
                } else if (rows[0].Password == password) {
                    mysqlConnection.query('UPDATE Users SET Loggon = TRUE  WHERE userName LIKE ?', [userId], function (err) {
                        if (err) {
@@ -275,7 +278,7 @@ app.post('/newuser', function (req, res, next) {
     var password = req.body.password;
 
     mysqlConnection.query(
-        'INSERT INTO PongGame (userName, Password) VALUES (?, ?)',
+        'INSERT INTO Users (userName, Password) VALUES (?, ?)',
         [userId, password],
         function(err, result) {
             if(err) {
